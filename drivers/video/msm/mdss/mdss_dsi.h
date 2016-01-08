@@ -90,6 +90,7 @@ enum dsi_panel_bl_ctrl {
 	BL_PWM,
 	BL_WLED,
 	BL_DCS_CMD,
+	BL_SIC,
 	UNKNOWN_CTRL,
 };
 
@@ -369,6 +370,15 @@ struct mdss_dsi_ctrl_pdata {
 
 	struct dsi_panel_cmds on_cmds;
 	struct dsi_panel_cmds off_cmds;
+
+	struct dsi_panel_cmds dispparam_cmds;
+	struct dsi_panel_cmds dispparam_cabcon_gui_cmds;
+	struct dsi_panel_cmds dispparam_cabcon_still_cmds;
+	struct dsi_panel_cmds dispparam_cabcon_movie_cmds;
+	struct dsi_panel_cmds dispparam_cabcoff_cmds;
+	struct dsi_panel_cmds dispparam_ceon_cmds;
+	struct dsi_panel_cmds dispparam_ceoff_cmds;
+
 	struct dsi_panel_cmds status_cmds;
 	u32 status_cmds_rlen;
 	u32 status_value;
@@ -397,6 +407,7 @@ struct mdss_dsi_ctrl_pdata {
 	bool core_power;
 	bool mmss_clamp;
 	bool timing_db_mode;
+	bool dsi_pipe_ready;
 	bool burst_mode_enabled;
 
 	struct dsi_buf tx_buf;

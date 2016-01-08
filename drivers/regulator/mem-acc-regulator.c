@@ -1,4 +1,5 @@
 /* Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2015 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -644,6 +645,53 @@ static int mem_acc_init(struct platform_device *pdev,
 			pr_err("Unable to initialize custom data for mem_type=%d rc=%d\n",
 					i, rc);
 			return rc;
+		}
+	}
+
+	if (of_find_property(mem_acc_vreg->dev->of_node,
+				"qcom,override-acc-fuse-sel", NULL)) {
+		rc = of_property_read_u32_array(mem_acc_vreg->dev->of_node,
+					"qcom,override-acc-fuse-sel",
+					override_acc_fuse_sel, 5);
+		if (rc < 0) {
+			pr_err("Read failed - qcom,override-acc-fuse-sel rc=%d\n",
+					rc);
+			return rc;
+		}
+
+		if (mem_acc_fuse_is_setting_expected(mem_acc_vreg,
+						override_acc_fuse_sel)) {
+			mem_acc_vreg->flags |= MEM_ACC_OVERRIDE_CONFIG;
+			pr_debug("Apply ACC override configuration\n");
+		}
+	}
+
+	if (mem_acc_vreg->flags & MEM_ACC_OVERRIDE_CONFIG) {
+		if (of_find_property(mem_acc_vreg->dev->of_node,
+				"qcom,override-corner-acc-map", NULL)) {
+			/* Free old corner-acc-map */
+			devm_kfree(&pdev->dev, mem_acc_vreg->corner_acc_map);
+
+			/* Populate override corner acc map */
+			rc = populate_acc_data(mem_acc_vreg,
+						"qcom,override-corner-acc-map",
+						&mem_acc_vreg->corner_acc_map,
+						&mem_acc_vreg->num_corners);
+			if (rc) {
+				pr_err("Unable to find 'qcom,overrie-corner-acc-map' rc=%d\n",
+					rc);
+				return rc;
+			}
+		}
+
+		for (i = 0; i < MEMORY_MAX; i++) {
+			rc = override_mem_acc_custom_data(pdev,
+							mem_acc_vreg, i);
+			if (rc) {
+				pr_err("Unable to override custom data for mem_type=%d rc=%d\n",
+					i, rc);
+				return rc;
+			}
 		}
 	}
 

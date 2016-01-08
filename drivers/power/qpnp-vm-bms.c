@@ -1,4 +1,5 @@
 /* Copyright (c) 2014, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2015 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -288,6 +289,15 @@ static void disable_bms_irq(struct bms_irq *irq)
 		pr_debug("disabled irq %d\n", irq->irq);
 	}
 }
+
+static void enable_bms_irq(struct bms_irq *irq)
+{
+	if (__test_and_clear_bit(0, &irq->disabled)) {
+		enable_irq(irq->irq);
+		pr_debug("enable irq %d\n", irq->irq);
+	}
+}
+
 
 static void enable_bms_irq(struct bms_irq *irq)
 {

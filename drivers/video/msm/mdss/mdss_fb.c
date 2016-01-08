@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2007 Google Incorporated
  * Copyright (c) 2008-2015, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2015 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -47,6 +48,7 @@
 #include <linux/sw_sync.h>
 #include <linux/file.h>
 #include <linux/kthread.h>
+#include <linux/input.h>
 
 #include <linux/qcom_iommu.h>
 #include <linux/msm_iommu_domains.h>
@@ -104,6 +106,7 @@ static int mdss_fb_pan_idle(struct msm_fb_data_type *mfd);
 static int mdss_fb_send_panel_event(struct msm_fb_data_type *mfd,
 					int event, void *arg);
 static void mdss_fb_set_mdp_sync_pt_threshold(struct msm_fb_data_type *mfd);
+
 void mdss_fb_no_update_notify_timer_cb(unsigned long data)
 {
 	struct msm_fb_data_type *mfd = (struct msm_fb_data_type *)data;
@@ -2915,6 +2918,16 @@ int mdss_fb_dcm(struct msm_fb_data_type *mfd, int req_state)
 	}
 
 	switch (req_state) {
+	case DCM_SLEEP:
+		if (mfd->mdp.pp_key_event_fnc)
+			mfd->mdp.pp_key_event_fnc(mfd, KEY_SLEEP);
+		break;
+	case DCM_WAKEUP:
+		if (mfd->mdp.pp_key_event_fnc) {
+			mfd->mdp.pp_key_event_fnc(mfd, KEY_WAKEUP);
+			mfd->mdp.pp_key_event_fnc(mfd, KEY_MENU);
+		}
+		break;
 	case DCM_UNBLANK:
 		if (mfd->dcm_state == DCM_UNINIT &&
 			mdss_fb_is_power_off(mfd) && mfd->mdp.on_fnc) {
