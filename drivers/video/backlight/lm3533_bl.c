@@ -34,6 +34,9 @@ struct lm3533_bl {
 	int id;
 };
 
+#ifdef CONFIG_MACH_XIAOMI_FERRARI
+struct backlight_device *lm3533_bl_bd = NULL;
+#endif
 
 static inline int lm3533_bl_get_ctrlbank_id(struct lm3533_bl *bl)
 {
@@ -341,6 +344,10 @@ static int lm3533_bl_probe(struct platform_device *pdev)
 	if (ret)
 		goto err_sysfs_remove;
 
+#ifdef CONFIG_MACH_XIAOMI_FERRARI
+	lm3533_bl_bd = bd;
+#endif
+
 	return 0;
 
 err_sysfs_remove:
@@ -364,6 +371,10 @@ static int lm3533_bl_remove(struct platform_device *pdev)
 	lm3533_ctrlbank_disable(&bl->cb);
 	sysfs_remove_group(&bd->dev.kobj, &lm3533_bl_attribute_group);
 	backlight_device_unregister(bd);
+
+#ifdef CONFIG_MACH_XIAOMI_FERRARI
+	lm3533_bl_bd = NULL;
+#endif
 
 	return 0;
 }

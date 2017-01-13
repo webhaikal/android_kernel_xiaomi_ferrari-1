@@ -58,6 +58,10 @@ struct lm3533_led_platform_data {
 	const char *default_trigger;
 	u16 max_current;		/* 5000 - 29800 uA (800 uA step) */
 	u8 pwm;				/* 0 - 0x3f */
+#ifdef CONFIG_MACH_XIAOMI_FERRARI
+	unsigned long delay_on;		/* 16ms - 9781ms */
+	unsigned long delay_off;	/* 16ms - 76s */
+#endif
 };
 
 enum lm3533_boost_freq {
@@ -100,5 +104,10 @@ extern int lm3533_ctrlbank_get_pwm(struct lm3533_ctrlbank *cb, u8 *val);
 extern int lm3533_read(struct lm3533 *lm3533, u8 reg, u8 *val);
 extern int lm3533_write(struct lm3533 *lm3533, u8 reg, u8 val);
 extern int lm3533_update(struct lm3533 *lm3533, u8 reg, u8 val, u8 mask);
+
+#ifdef CONFIG_MACH_XIAOMI_FERRARI
+extern int lm3533_init(struct lm3533 *lm3533);
+extern struct backlight_device *lm3533_bl_bd;
+#endif
 
 #endif	/* __LINUX_MFD_LM3533_H */
