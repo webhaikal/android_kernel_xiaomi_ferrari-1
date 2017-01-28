@@ -762,53 +762,6 @@ static struct regmap_config regmap_config = {
 	.precious_reg	= lm3533_precious_register,
 };
 
-#ifdef CONFIG_MACH_XIAOMI_FERRARI
-int lm3533_init(struct lm3533 *lm3533)
-{
-	struct lm3533_platform_data *pdata = lm3533->dev->platform_data;
-	struct lm3533_bl_platform_data *pbl_data = pdata->backlights;
-	if(lm3533 != NULL) {
-
-		// lm3533-backlight
-		lm3533_write(lm3533, 0x10, 0x90);	// 0x92: Current Sink Output Configuration 1
-		lm3533_write(lm3533, 0x11, 0x0F);	// 0x0F: Current Sink Output Configuration 2
-		lm3533_write(lm3533, 0x1A, 0x02);	// 0x00: Control Bank A/B Brightness Configuration
-		lm3533_write(lm3533, 0x1F, 0x12);	// 0x13: Control Bank A Full-Scale Current
-		lm3533_write(lm3533, 0x2C, 0x0C);	// 0x08: OVP/Frequency/PWM Polarity
-		if(pbl_data != NULL) {
-			lm3533_write(lm3533, 0x14, pbl_data->pwm);	// 0x38: Control Bank A PWM Configuration
-		}
-
-		// lm3533-button-backlight
-		lm3533_write(lm3533, 0x21, 0x13);	// 0x13: Control Bank C Full-Scale Current
-		lm3533_write(lm3533, 0x22, 0x13);	// 0x13: Control Bank D Full-Scale Current
-		lm3533_write(lm3533, 0x23, 0x13);	// 0x13: Control Bank E Full-Scale Current
-		lm3533_write(lm3533, 0x24, 0x00);	// 0x13: Control Bank F Full-Scale Current
-		lm3533_write(lm3533, 0x25, 0x7f);	// 0x7F: Anode Connect
-
-		lm3533_write(lm3533, 0x27, 0x3D);	// 0x00: Control Bank Enable : ACDEF
-
-		lm3533_write(lm3533, 0x16, 0x00);	// 0x38: Control Bank C PWM Configuration
-		lm3533_write(lm3533, 0x17, 0x00);	// 0x38: Control Bank D PWM Configuration
-		lm3533_write(lm3533, 0x18, 0x00);	// 0x38: Control Bank E PWM Configuration
-		lm3533_write(lm3533, 0x19, 0x00);	// 0x38: Control Bank F PWM Configuration
-
-		lm3533_write(lm3533, 0x1B, 0x00);	// 0x00: Control Bank C Brightness Configuration
-		lm3533_write(lm3533, 0x1C, 0x00);	// 0x00: Control Bank D Brightness Configuration
-		lm3533_write(lm3533, 0x1D, 0x00);	// 0x00: Control Bank E Brightness Configuration
-		lm3533_write(lm3533, 0x1E, 0x00);	// 0x00: Control Bank F Brightness Configuration
-
-		lm3533_write(lm3533, 0x42, 0x00);	// 0x00: Brightness Register C
-		lm3533_write(lm3533, 0x43, 0x00);	// 0x00: Brightness Register D
-		lm3533_write(lm3533, 0x44, 0x00);	// 0x00: Brightness Register E
-		lm3533_write(lm3533, 0x45, 0x00);	// 0x00: Brightness Register F
-	} else {
-		pr_err("In %s,lm3533 == NULL \n",__func__);
-	}
-	return 0;
-}
-#endif
-
 static int lm3533_i2c_probe(struct i2c_client *i2c,
 					const struct i2c_device_id *id)
 {

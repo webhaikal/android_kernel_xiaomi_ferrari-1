@@ -106,7 +106,6 @@ extern int lm3533_write(struct lm3533 *lm3533, u8 reg, u8 val);
 extern int lm3533_update(struct lm3533 *lm3533, u8 reg, u8 val, u8 mask);
 
 #ifdef CONFIG_MACH_XIAOMI_FERRARI
-extern int lm3533_init(struct lm3533 *lm3533);
 extern struct backlight_device *lm3533_bl_bd;
 #endif
 
