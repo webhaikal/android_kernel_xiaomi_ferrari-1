@@ -703,6 +703,12 @@ static int lm3533_led_setup(struct lm3533_led *led,
 		return ret;
 
 #ifdef CONFIG_MACH_XIAOMI_FERRARI
+	if (pdata->linear) {
+		ret = lm3533_led_linear_set(led, pdata->linear);
+		if (ret)
+			return ret;
+	}
+
 	if (pdata->delay_on && pdata->delay_off) {
 		ret = lm3533_led_delay_on_set(led, &pdata->delay_on);
 		if (ret)

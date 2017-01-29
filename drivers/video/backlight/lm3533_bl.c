@@ -275,6 +275,14 @@ static int lm3533_bl_setup(struct lm3533_bl *bl,
 	if (ret)
 		return ret;
 
+#ifdef CONFIG_MACH_XIAOMI_FERRARI
+	if (pdata->linear) {
+		ret = lm3533_bl_set_linear(bl, pdata->linear);
+		if (ret)
+			return ret;
+	}
+#endif
+
 	return lm3533_ctrlbank_set_pwm(&bl->cb, pdata->pwm);
 }
 

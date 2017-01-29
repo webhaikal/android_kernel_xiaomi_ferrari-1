@@ -578,6 +578,13 @@ static int lm3533_parse_dt(struct device *dev,
 				pdata->backlights[i].pwm = 0x3f;
 			}
 
+			rc = of_property_read_u8(sub_np, "lm3533,bl-linear",
+					&pdata->backlights[i].linear);
+			if (rc) {
+				dev_err(dev, "can't read lm3533,bl-linear\n");
+				pdata->backlights[i].linear = 0x00;
+			}
+
 			i++;
 		} else {
 			// lm3533-led setting
@@ -597,6 +604,13 @@ static int lm3533_parse_dt(struct device *dev,
 			if (rc) {
 				dev_err(dev, "can't read led-pwm\n");
 				pdata->leds[j].pwm = 0x38;
+			}
+
+			rc = of_property_read_u8(sub_np, "lm3533,led-linear",
+					&pdata->leds[j].linear);
+			if (rc) {
+				dev_err(dev, "can't read led-linear\n");
+				pdata->leds[j].linear = 0x00;
 			}
 
 			rc = of_property_read_u32(sub_np, "lm3533,led-delay-on",

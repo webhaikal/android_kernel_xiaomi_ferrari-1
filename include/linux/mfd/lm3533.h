@@ -51,6 +51,9 @@ struct lm3533_bl_platform_data {
 	u16 max_current;		/* 5000 - 29800 uA (800 uA step) */
 	u8 default_brightness;		/* 0 - 255 */
 	u8 pwm;				/* 0 - 0x3f */
+#ifdef CONFIG_MACH_XIAOMI_FERRARI
+	u8 linear;
+#endif
 };
 
 struct lm3533_led_platform_data {
@@ -59,6 +62,7 @@ struct lm3533_led_platform_data {
 	u16 max_current;		/* 5000 - 29800 uA (800 uA step) */
 	u8 pwm;				/* 0 - 0x3f */
 #ifdef CONFIG_MACH_XIAOMI_FERRARI
+	u8 linear;
 	unsigned long delay_on;		/* 16ms - 9781ms */
 	unsigned long delay_off;	/* 16ms - 76s */
 #endif
