@@ -93,7 +93,7 @@
 			lm3533,bl-max-current = /bits/ 16 <0x4ee8>;
 			lm3533,bl-def-brightness = /bits/ 8 <0x82>;
 			lm3533,bl-pwm = /bits/ 8 <0x1>;
-			lm3533,bl-linear = <0x1>;
+			lm3533,bl-linear = /bits/ 8 <0x1>;
 		};
 
 		lm3533,led_0 {
@@ -126,6 +126,7 @@
 			lm3533,led-pwm = /bits/ 8 <0x0>;
 			lm3533,led-delay-on = <0x28a>;
 			lm3533,led-delay-off = <0xc8>;
+			lm3533,led-linear = /bits/ 8 <0x1>;
 		};
 	};
 };
