@@ -17,6 +17,9 @@
 #include <linux/export.h>
 #include <msm_camera_io_util.h>
 #include <msm_led_flash.h>
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+#include "lm3646_dummy.h"
+#endif
 
 #define FLASH_NAME "ti,lm3646"
 
@@ -27,7 +30,11 @@
 #define LM3646_DBG(fmt, args...)
 #endif
 
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+struct msm_led_flash_ctrl_t fctrl;
+#else
 static struct msm_led_flash_ctrl_t fctrl;
+#endif
 static struct i2c_driver lm3646_i2c_driver;
 
 static struct msm_camera_i2c_reg_array lm3646_init_array[] = {
@@ -42,19 +49,35 @@ static struct msm_camera_i2c_reg_array lm3646_init_array[] = {
 	{0x09, 0x30},
 };
 
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+struct msm_camera_i2c_reg_array lm3646_off_array[] = {
+#else
 static struct msm_camera_i2c_reg_array lm3646_off_array[] = {
+#endif
 	{0x01, 0xE0},
 };
 
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+struct msm_camera_i2c_reg_array lm3646_release_array[] = {
+#else
 static struct msm_camera_i2c_reg_array lm3646_release_array[] = {
+#endif
 };
 
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+struct msm_camera_i2c_reg_array lm3646_low_array[] = {
+#else
 static struct msm_camera_i2c_reg_array lm3646_low_array[] = {
+#endif
 	{0x07, 0x7f}, // torch - 186mA  ~= 1.0 / 0.0
 	{0x01, 0xE2},
 };
 
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+struct msm_camera_i2c_reg_array lm3646_high_array[] = {
+#else
 static struct msm_camera_i2c_reg_array lm3646_high_array[] = {
+#endif
 	{0x06, 0x56}, // flash - 1019mA ~= 1.0 / 0.0
 	{0x01, 0xE3},
 };
@@ -185,7 +208,11 @@ static struct msm_flash_fn_t lm3646_func_tbl = {
 	.flash_led_high = msm_flash_led_high,
 };
 
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+struct msm_led_flash_ctrl_t fctrl = {
+#else
 static struct msm_led_flash_ctrl_t fctrl = {
+#endif
 	.flash_i2c_client = &lm3646_i2c_client,
 	.reg_setting = &lm3646_regs,
 	.func_tbl = &lm3646_func_tbl,

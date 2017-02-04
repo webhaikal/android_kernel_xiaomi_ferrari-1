@@ -20,6 +20,9 @@
 #include "msm_led_flash.h"
 #include "../cci/msm_cci.h"
 #include <linux/debugfs.h>
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+#include "lm3646/lm3646_dummy.h"
+#endif
 
 #define FLASH_NAME "camera-led-flash"
 #define CAM_FLASH_PINCTRL_STATE_SLEEP "cam_flash_suspend"
@@ -57,6 +60,9 @@ int32_t msm_led_i2c_trigger_config(struct msm_led_flash_ctrl_t *fctrl,
 	switch (cfg->cfgtype) {
 
 	case MSM_CAMERA_LED_INIT:
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+		lm3646_dummy_data.state = MSM_CAMERA_LED_INIT;
+#endif
 		if (fctrl->func_tbl->flash_led_init)
 			rc = fctrl->func_tbl->flash_led_init(fctrl);
 		for (i = 0; i < MAX_LED_TRIGGERS; i++) {
@@ -70,17 +76,26 @@ int32_t msm_led_i2c_trigger_config(struct msm_led_flash_ctrl_t *fctrl,
 		break;
 
 	case MSM_CAMERA_LED_RELEASE:
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+		lm3646_dummy_data.state = MSM_CAMERA_LED_RELEASE;
+#endif
 		if (fctrl->func_tbl->flash_led_release)
 			rc = fctrl->func_tbl->
 				flash_led_release(fctrl);
 		break;
 
 	case MSM_CAMERA_LED_OFF:
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+		lm3646_dummy_data.state = MSM_CAMERA_LED_OFF;
+#endif
 		if (fctrl->func_tbl->flash_led_off)
 			rc = fctrl->func_tbl->flash_led_off(fctrl);
 		break;
 
 	case MSM_CAMERA_LED_LOW:
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+		lm3646_dummy_data.state = MSM_CAMERA_LED_LOW;
+#endif
 		for (i = 0; i < fctrl->torch_num_sources; i++) {
 			if (fctrl->torch_max_current[i] > 0) {
 				fctrl->torch_op_current[i] =
@@ -95,6 +110,9 @@ int32_t msm_led_i2c_trigger_config(struct msm_led_flash_ctrl_t *fctrl,
 		break;
 
 	case MSM_CAMERA_LED_HIGH:
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+		lm3646_dummy_data.state = MSM_CAMERA_LED_HIGH;
+#endif
 		for (i = 0; i < fctrl->flash_num_sources; i++) {
 			if (fctrl->flash_max_current[i] > 0) {
 				fctrl->flash_op_current[i] =
