@@ -15,8 +15,8 @@
 
 #include <linux/module.h>
 #include <linux/export.h>
-#include "msm_camera_io_util.h"
-#include "msm_led_flash.h"
+#include <msm_camera_io_util.h>
+#include <msm_led_flash.h>
 
 #define FLASH_NAME "ti,lm3646"
 

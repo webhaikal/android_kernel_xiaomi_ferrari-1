@@ -1,0 +1,3 @@
+config MSMB_CAMERA_SENSOR_FLASH_LM3646
+	bool "LM3646 Flash sensor support"
+	depends on MSMB_CAMERA
