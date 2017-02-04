@@ -30,18 +30,18 @@
 
 struct __lm3646_dummy_data lm3646_dummy_data;
 
-static void lm3646_dummy_led_set_brightness(struct led_classdev *cdev,
-						enum led_brightness brightness)
-{
+static void lm3646_set_brightness(unsigned int brightness) {
 	int rc = 0;
 
+	LM3646_DBG("%s: enter!\n", __func__);
+
 	if (lm3646_dummy_data.brightness == brightness) {
-		LM3646_DBG("%s: same brightness value = %d; return\n",
+		LM3646_DBG("%s: same brightness value = %u; return\n",
 				__func__, brightness);
 		return;
 	}
 
-	LM3646_DBG("%s: %d\n", __func__, brightness);
+	LM3646_DBG("%s: %u\n", __func__, brightness);
 
 	if (brightness == 0) {
 		if (fctrl.func_tbl->flash_led_low) {
@@ -76,6 +76,12 @@ static void lm3646_dummy_led_set_brightness(struct led_classdev *cdev,
 	}
 
 	lm3646_dummy_data.brightness = brightness;
+}
+
+static void lm3646_dummy_led_set_brightness(struct led_classdev *cdev,
+						enum led_brightness brightness)
+{
+	lm3646_set_brightness(brightness);
 }
 
 static enum led_brightness lm3646_dummy_led_get_brightness(struct led_classdev *cdev)
