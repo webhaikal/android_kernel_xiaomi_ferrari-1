@@ -37,12 +37,23 @@ static struct msm_led_flash_ctrl_t fctrl;
 #endif
 static struct i2c_driver lm3646_i2c_driver;
 
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+struct msm_camera_i2c_reg_array lm3646_init_array[] = {
+#else
 static struct msm_camera_i2c_reg_array lm3646_init_array[] = {
+#endif
 	{0x01, 0xE0}, // 3.1A Inductor Current Limit, Standby
 	{0x02, 0x24},
 	{0x03, 0x20},
 	{0x04, 0x07}, // flash timeout 400ms strobe level
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+	{0x05, LM3646_REG_MAX_CURRENT(		\
+		DEFAULT_MAX_TORCH_CURRENT,	\
+		DEFAULT_MAX_FLASH_CURRENT	\
+	)},
+#else
 	{0x05, 0x7A}, // 187mA, 1030mA
+#endif
 	{0x06, 0x56}, // flash - 1019mA ~= 1.0 / 0.0
 	{0x07, 0x7f}, // torch - 186mA  ~= 1.0 / 0.0
 	{0x08, 0x00},

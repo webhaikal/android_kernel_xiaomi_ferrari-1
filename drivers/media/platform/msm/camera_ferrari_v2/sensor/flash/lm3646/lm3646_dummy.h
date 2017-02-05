@@ -17,8 +17,14 @@
 
 #include "../msm_led_flash.h"
 
+#define DEFAULT_MAX_TORCH_CURRENT 0x7
+#define DEFAULT_MAX_FLASH_CURRENT 0xA
+
+#define LM3646_REG_MAX_CURRENT(a,b) ( (((a) & 0x7) << 4) | (b) )
+
 extern struct msm_led_flash_ctrl_t fctrl;
 
+extern struct msm_camera_i2c_reg_array lm3646_init_array[];
 extern struct msm_camera_i2c_reg_array lm3646_off_array[];
 extern struct msm_camera_i2c_reg_array lm3646_release_array[];
 extern struct msm_camera_i2c_reg_array lm3646_low_array[];

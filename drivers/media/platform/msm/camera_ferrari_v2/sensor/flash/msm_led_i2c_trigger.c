@@ -62,6 +62,10 @@ int32_t msm_led_i2c_trigger_config(struct msm_led_flash_ctrl_t *fctrl,
 	case MSM_CAMERA_LED_INIT:
 #ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
 		lm3646_dummy_data.state = MSM_CAMERA_LED_INIT;
+		lm3646_init_array[4].reg_data = LM3646_REG_MAX_CURRENT(	\
+			DEFAULT_MAX_TORCH_CURRENT,			\
+			DEFAULT_MAX_FLASH_CURRENT			\
+		);
 #endif
 		if (fctrl->func_tbl->flash_led_init)
 			rc = fctrl->func_tbl->flash_led_init(fctrl);

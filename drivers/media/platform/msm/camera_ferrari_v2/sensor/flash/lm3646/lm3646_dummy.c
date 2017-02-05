@@ -30,10 +30,19 @@
 
 struct __lm3646_dummy_data lm3646_dummy_data;
 
+static uint16_t lm3646_get_torch_brightness_value(unsigned int brightness) {
+	return LM3646_REG_MAX_CURRENT(			\
+		(brightness >> 5),			\
+		DEFAULT_MAX_FLASH_CURRENT		\
+	);
+};
+
 static void lm3646_set_brightness(unsigned int brightness) {
 	int rc = 0;
 
 	LM3646_DBG("%s: enter!\n", __func__);
+
+	brightness = brightness & 0xFF;
 
 	if (lm3646_dummy_data.brightness == brightness) {
 		LM3646_DBG("%s: same brightness value = %u; return\n",
@@ -59,6 +68,9 @@ static void lm3646_set_brightness(unsigned int brightness) {
 			}
 		}
 	} else {
+		lm3646_init_array[4].reg_data =		\
+			lm3646_get_torch_brightness_value(brightness);
+
 		if (fctrl.func_tbl->flash_led_init) {
 			rc = fctrl.func_tbl->flash_led_init(&fctrl);
 			if (rc < 0) {
