@@ -37,14 +37,14 @@ static uint16_t lm3646_get_torch_brightness_value(unsigned int brightness) {
 	);
 };
 
-static void lm3646_set_brightness(unsigned int brightness) {
+static void lm3646_set_brightness(unsigned int brightness, u8 force) {
 	int rc = 0;
 
 	LM3646_DBG("%s: enter!\n", __func__);
 
 	brightness = brightness & 0xFF;
 
-	if (lm3646_dummy_data.brightness == brightness) {
+	if (lm3646_dummy_data.brightness == brightness && !force) {
 		LM3646_DBG("%s: same brightness value = %u; return\n",
 				__func__, brightness);
 		return;
@@ -53,8 +53,8 @@ static void lm3646_set_brightness(unsigned int brightness) {
 	LM3646_DBG("%s: %u\n", __func__, brightness);
 
 	if (brightness == 0) {
-		if (fctrl.func_tbl->flash_led_low) {
-			rc = fctrl.func_tbl->flash_led_low(&fctrl);
+		if (fctrl.func_tbl->flash_led_off) {
+			rc = fctrl.func_tbl->flash_led_off(&fctrl);
 			if (rc < 0) {
 				LM3646_ERR("%s:%d fail\n", __func__, __LINE__);
 				return;
@@ -93,7 +93,7 @@ static void lm3646_set_brightness(unsigned int brightness) {
 static void lm3646_dummy_led_set_brightness(struct led_classdev *cdev,
 						enum led_brightness brightness)
 {
-	lm3646_set_brightness(brightness);
+	lm3646_set_brightness(brightness, 0);
 }
 
 static enum led_brightness lm3646_dummy_led_get_brightness(struct led_classdev *cdev)
@@ -101,6 +101,60 @@ static enum led_brightness lm3646_dummy_led_get_brightness(struct led_classdev *
 	LM3646_DBG("%s: enter!\n", __func__);
 	return lm3646_dummy_data.brightness;
 }
+
+static ssize_t lm3646_dummy_led_store_flash(struct device *dev,
+						struct device_attribute *attr,
+						const char *buf, size_t size)
+{
+	u8 val;
+	int rc;
+
+	if (kstrtou8(buf, 0, &val))
+		return -EINVAL;
+
+	if (!val)
+		return size;
+
+	if (fctrl.func_tbl->flash_led_init) {
+		rc = fctrl.func_tbl->flash_led_init(&fctrl);
+		if (rc < 0) {
+			LM3646_ERR("%s:%d fail\n", __func__, __LINE__);
+			return rc;
+		}
+	}
+
+	if (fctrl.func_tbl->flash_led_high) {
+		rc = fctrl.func_tbl->flash_led_high(&fctrl);
+		if (rc < 0) {
+			LM3646_ERR("%s:%d fail\n", __func__, __LINE__);
+			return rc;
+		}
+	}
+
+	msleep_interruptible(400);
+
+	if (lm3646_dummy_data.brightness) {
+		lm3646_set_brightness(lm3646_dummy_data.brightness, 1);
+	} else {
+		if (fctrl.func_tbl->flash_led_off) {
+			rc = fctrl.func_tbl->flash_led_off(&fctrl);
+			if (rc < 0) {
+				LM3646_ERR("%s:%d fail\n", __func__, __LINE__);
+				return rc;
+			}
+		}
+		if (fctrl.func_tbl->flash_led_release) {
+			rc = fctrl.func_tbl->flash_led_release(&fctrl);
+			if (rc < 0) {
+				LM3646_ERR("%s:%d fail\n", __func__, __LINE__);
+				return rc;
+			}
+		}
+	}
+
+	return size;
+}
+static DEVICE_ATTR(flash, S_IWUSR, NULL, lm3646_dummy_led_store_flash);
 
 static struct led_classdev lm3646_dummy_led_cdev = {
 	.name = "torch",
@@ -141,14 +195,26 @@ static int __init lm3646_dummy_led_init(void)
 
 	if ((ret = platform_driver_register(&lm3646_dummy_led_driver)) != 0) {
 		LM3646_ERR("%s: platform_driver_register failed!\n", __func__);
-		return ret;
+		goto err_out;
 	}
 
 	if ((ret = platform_device_register(&lm3646_dummy_led_pdev)) != 0) {
 		LM3646_ERR("%s: platform_device_register failed!\n", __func__);
 		platform_driver_unregister(&lm3646_dummy_led_driver);
+		goto err_out;
 	}
 
+	ret = device_create_file(lm3646_dummy_led_cdev.dev, &dev_attr_flash);
+	if (ret < 0) {
+		LM3646_ERR("%s: failed to create flash file\n", __func__);
+		goto err_create_flash_file;
+	}
+
+	goto err_out;
+
+err_create_flash_file:
+	led_classdev_unregister(&lm3646_dummy_led_cdev);
+err_out:
 	return ret;
 }
 
