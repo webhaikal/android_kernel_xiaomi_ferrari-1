@@ -109,6 +109,18 @@ int32_t msm_led_i2c_trigger_config(struct msm_led_flash_ctrl_t *fctrl,
 					i, fctrl->torch_op_current[i], fctrl->torch_max_current[i]);
 			}
 		}
+
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+		LM3646_DUMMY_DBG("lowcurrent: %u\n", cfg->torch_current[0]);
+		LM3646_DUMMY_DBG("low reg b4: %u\n", fctrl->reg_setting->low_setting->reg_setting[0].reg_data);
+		fctrl->reg_setting->low_setting->reg_setting[0].reg_data = \
+			lm3646_get_wcf_torch_current(cfg->torch_current[0]);
+		LM3646_DUMMY_DBG("low reg a4: %u\n", fctrl->reg_setting->low_setting->reg_setting[0].reg_data);
+#else
+		fctrl->reg_setting->low_setting->reg_setting[0].reg_data = \
+			(0x7F - cfg->torch_current[0]);
+#endif
+
 		if (fctrl->func_tbl->flash_led_low)
 			rc = fctrl->func_tbl->flash_led_low(fctrl);
 		break;
@@ -126,6 +138,17 @@ int32_t msm_led_i2c_trigger_config(struct msm_led_flash_ctrl_t *fctrl,
 					i, fctrl->flash_op_current[i], fctrl->flash_max_current[i]);
 			}
 		}
+
+#ifdef CONFIG_MSMB_CAMERA_SENSOR_FLASH_LM3646_DUMMY
+		LM3646_DUMMY_DBG("highcurrent: %u\n", cfg->flash_current[0]);
+		LM3646_DUMMY_DBG("high reg b4: %u\n", fctrl->reg_setting->high_setting->reg_setting[0].reg_data);
+		fctrl->reg_setting->high_setting->reg_setting[0].reg_data = \
+			lm3646_get_wcf_flash_current(cfg->flash_current[0]);
+		LM3646_DUMMY_DBG("high reg a4: %u\n", fctrl->reg_setting->high_setting->reg_setting[0].reg_data);
+#else
+		fctrl->reg_setting->high_setting->reg_setting[0].reg_data = \
+			(0x81 - cfg->flash_current[0]) * 2 / 3;
+#endif
 		if (fctrl->func_tbl->flash_led_high)
 			rc = fctrl->func_tbl->flash_led_high(fctrl);
 		break;

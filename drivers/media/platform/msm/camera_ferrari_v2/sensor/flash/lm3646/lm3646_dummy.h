@@ -17,6 +17,12 @@
 
 #include "../msm_led_flash.h"
 
+#define LM3646_DUMMY_LOGTAG "[LM3646]"
+#define LM3646_DUMMY_LOGTAGD LM3646_DUMMY_LOGTAG "[D] "
+#define LM3646_DUMMY_LOGTAGE LM3646_DUMMY_LOGTAG "[E] "
+#define LM3646_DUMMY_DBG(fmt, args...) pr_err(LM3646_DUMMY_LOGTAGD fmt, ##args)
+#define LM3646_DUMMY_ERR(fmt, args...) pr_err(LM3646_DUMMY_LOGTAGE fmt, ##args)
+
 #define DEFAULT_MAX_TORCH_CURRENT 0x7
 #define DEFAULT_MAX_FLASH_CURRENT 0xA
 
@@ -33,8 +39,12 @@ extern struct msm_camera_i2c_reg_array lm3646_high_array[];
 struct __lm3646_dummy_data {
 	enum msm_camera_led_config_t state;
 	u8 brightness;
+	uint16_t wcf; // warmth correction factor
 };
 
 extern struct __lm3646_dummy_data lm3646_dummy_data;
+
+uint16_t lm3646_get_wcf_torch_current(unsigned int c);
+uint16_t lm3646_get_wcf_flash_current(unsigned int c);
 
 #endif // MSM_LED_FLASH_LM3646_DUMMY_H
