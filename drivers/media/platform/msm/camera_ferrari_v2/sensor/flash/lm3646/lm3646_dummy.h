@@ -20,7 +20,7 @@
 #define LM3646_DUMMY_LOGTAG "[LM3646]"
 #define LM3646_DUMMY_LOGTAGD LM3646_DUMMY_LOGTAG "[D] "
 #define LM3646_DUMMY_LOGTAGE LM3646_DUMMY_LOGTAG "[E] "
-#define LM3646_DUMMY_DBG(fmt, args...) pr_err(LM3646_DUMMY_LOGTAGD fmt, ##args)
+#define LM3646_DUMMY_DBG(fmt, args...) pr_dbg(LM3646_DUMMY_LOGTAGD fmt, ##args)
 #define LM3646_DUMMY_ERR(fmt, args...) pr_err(LM3646_DUMMY_LOGTAGE fmt, ##args)
 
 #define DEFAULT_MAX_TORCH_CURRENT 0x7
