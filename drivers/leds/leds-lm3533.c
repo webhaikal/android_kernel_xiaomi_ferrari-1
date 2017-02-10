@@ -611,37 +611,6 @@ static ssize_t store_pwm(struct device *dev,
 	return len;
 }
 
-#ifdef CONFIG_MACH_XIAOMI_FERRARI
-static ssize_t show_blink(struct device *dev,
-					   struct device_attribute *attr,
-					   char *buf)
-{
-
-	struct led_classdev *led_cdev = dev_get_drvdata(dev);
-	struct lm3533_led *led = to_lm3533_led(led_cdev);
-	u8 state = !!test_bit(LM3533_LED_FLAG_PATTERN_ENABLE, &led->flags);
-
-	return scnprintf(buf, PAGE_SIZE, "%u\n", state);
-}
-
-static ssize_t store_blink(struct device *dev,
-					   struct device_attribute *attr,
-					   const char *buf, size_t len)
-{
-	struct led_classdev *led_cdev = dev_get_drvdata(dev);
-	struct lm3533_led *led = to_lm3533_led(led_cdev);
-	u8 val;
-
-	if (kstrtou8(buf, 0, &val))
-		return -EINVAL;
-
-	if (lm3533_led_pattern_enable(led, !!val))
-		return -EIO;
-
-	return len;
-}
-#endif
-
 static LM3533_ATTR_RW(als_channel);
 static LM3533_ATTR_RW(als_en);
 static LM3533_ATTR_RW(falltime);
@@ -649,10 +618,6 @@ static LM3533_ATTR_RO(id);
 static LM3533_ATTR_RW(linear);
 static LM3533_ATTR_RW(pwm);
 static LM3533_ATTR_RW(risetime);
-#ifdef CONFIG_MACH_XIAOMI_FERRARI
-static LM3533_ATTR_RW(blink);
-#endif
-
 
 static struct attribute *lm3533_led_attributes[] = {
 	&dev_attr_als_channel.attr,
@@ -662,9 +627,6 @@ static struct attribute *lm3533_led_attributes[] = {
 	&dev_attr_linear.attr,
 	&dev_attr_pwm.attr,
 	&dev_attr_risetime.attr,
-#ifdef CONFIG_MACH_XIAOMI_FERRARI
-	&dev_attr_blink.attr,
-#endif
 	NULL,
 };
 
