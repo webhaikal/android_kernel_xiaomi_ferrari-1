@@ -656,9 +656,6 @@ static int lm3533_led_setup(struct lm3533_led *led,
 					struct lm3533_led_platform_data *pdata)
 {
 	int ret;
-#ifdef CONFIG_MACH_XIAOMI_FERRARI
-	u8 reg;
-#endif
 
 	ret = lm3533_ctrlbank_set_max_current(&led->cb, pdata->max_current);
 	if (ret)
@@ -667,28 +664,6 @@ static int lm3533_led_setup(struct lm3533_led *led,
 #ifdef CONFIG_MACH_XIAOMI_FERRARI
 	if (pdata->linear) {
 		ret = lm3533_led_linear_set(led, pdata->linear);
-		if (ret)
-			return ret;
-	}
-
-	if (pdata->delay_on && pdata->delay_off) {
-		ret = lm3533_led_delay_on_set(led, &pdata->delay_on);
-		if (ret)
-			return ret;
-
-		ret = lm3533_led_delay_off_set(led, &pdata->delay_off);
-		if (ret)
-			return ret;
-
-		/* 1.049s for default falltime */
-		reg = lm3533_led_get_pattern_reg(led, LM3533_REG_PATTERN_FALLTIME_BASE);
-		ret = lm3533_write(led->lm3533, reg, 3);
-		if (ret)
-			return ret;
-
-		/* 1.049s for default risetime */
-		reg = lm3533_led_get_pattern_reg(led, LM3533_REG_PATTERN_RISETIME_BASE);
-		ret = lm3533_write(led->lm3533, reg, 3);
 		if (ret)
 			return ret;
 	}
