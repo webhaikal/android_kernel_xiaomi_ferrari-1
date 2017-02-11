@@ -100,32 +100,24 @@
 			lm3533,name = "red";
 			lm3533,led-max-current = /bits/ 16 <0x1388>;
 			lm3533,led-pwm = /bits/ 8 <0x0>;
-			lm3533,led-delay-on = <0x28a>;
-			lm3533,led-delay-off = <0xc8>;
 		};
 
 		lm3533,led_1 {
 			lm3533,name = "blue";
 			lm3533,led-max-current = /bits/ 16 <0x1388>;
 			lm3533,led-pwm = /bits/ 8 <0x0>;
-			lm3533,led-delay-on = <0x28a>;
-			lm3533,led-delay-off = <0xc8>;
 		};
 
 		lm3533,led_2 {
 			lm3533,name = "green";
 			lm3533,led-max-current = /bits/ 16 <0x1388>;
 			lm3533,led-pwm = /bits/ 8 <0x0>;
-			lm3533,led-delay-on = <0x28a>;
-			lm3533,led-delay-off = <0xc8>;
 		};
 
 		lm3533,led_3 {
 			lm3533,name = "button-backlight";
 			lm3533,led-max-current = /bits/ 16 <0x1388>;
 			lm3533,led-pwm = /bits/ 8 <0x0>;
-			lm3533,led-delay-on = <0x28a>;
-			lm3533,led-delay-off = <0xc8>;
 			lm3533,led-linear = /bits/ 8 <0x1>;
 		};
 	};
