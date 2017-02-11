@@ -63,8 +63,6 @@ struct lm3533_led_platform_data {
 	u8 pwm;				/* 0 - 0x3f */
 #ifdef CONFIG_MACH_XIAOMI_FERRARI
 	u8 linear;
-	unsigned long delay_on;		/* 16ms - 9781ms */
-	unsigned long delay_off;	/* 16ms - 76s */
 #endif
 };
 

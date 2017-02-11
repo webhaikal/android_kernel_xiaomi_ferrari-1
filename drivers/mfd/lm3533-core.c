@@ -613,20 +613,6 @@ static int lm3533_parse_dt(struct device *dev,
 				pdata->leds[j].linear = 0x00;
 			}
 
-			rc = of_property_read_u32(sub_np, "lm3533,led-delay-on",
-					(u32 *)&pdata->leds[j].delay_on);
-			if (rc) {
-				dev_err(dev, "can't read lm3533,led-delay-on\n");
-				pdata->leds[j].delay_on = 650;
-			}
-
-			rc = of_property_read_u32(sub_np, "lm3533,led-delay-off",
-					(u32 *)&pdata->leds[j].delay_off);
-			if (rc) {
-				dev_err(dev, "can't read lm3533,led-delay-off\n");
-				pdata->leds[j].delay_off = 200;
-			}
-
 			j++;
 		}
 	}
