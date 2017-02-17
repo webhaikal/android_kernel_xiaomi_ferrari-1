@@ -17,14 +17,14 @@
 		qcom,pin-func = <0x0>;
 		qcom,pins = <&gp 120>, <&gp 121>;
 
-		vibrator_pin_disable: vibrator_pin_disable {
-			bias-pull-down;
-			drive-strength = <0x2>;
-		};
-
 		vibrator_pin_enable: vibrator_pin_enable {
 			bias-disable = <0x0>;
 			drive-strength = <0x10>;
+		};
+
+		vibrator_pin_disable: vibrator_pin_disable {
+			bias-pull-down;
+			drive-strength = <0x2>;
 		};
 	};
 
@@ -52,7 +52,7 @@
 		clocks = <&clock_gcc clk_gcc_gp1_clk>;
 		compatible = "vibrator,isa1000";
 		pinctrl-0 = <&vibrator_pwm_default &vibrator_pin_enable>;
-		pinctrl-1 = <&vibrator_pwm_default &vibrator_pin_enable>;
+		pinctrl-1 = <&vibrator_pwm_sleep &vibrator_pin_disable>;
 		pinctrl-names = "pwm_default", "pwm_sleep";
 	};
 };
