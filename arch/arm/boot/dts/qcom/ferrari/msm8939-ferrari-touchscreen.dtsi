@@ -41,16 +41,6 @@
 };
 
 &soc {
-	gen-vkeys {
-		compatible = "qcom,gen-vkeys";
-		label = "ft5x46";
-		qcom,disp-maxx = <0x438>;
-		qcom,disp-maxy = <0x780>;
-		qcom,key-codes = <0x8b 0x66 0x9e>;
-		qcom,panel-maxx = <0x438>;
-		qcom,panel-maxy = <0x820>;
-	};
-
 	i2c_5: i2c@78b9000 { /* BLSP1 QUP5 */
 		atmel_mxt_ts_336t@4a {
 			atmel,config-array-size = <0x4>;
