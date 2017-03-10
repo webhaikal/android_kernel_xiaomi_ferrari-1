@@ -230,6 +230,9 @@ static e_hdd_ssr_required isSsrRequired = HDD_SSR_NOT_REQUIRED;
 static VOS_STATUS wlan_hdd_framework_restart(hdd_context_t *pHddCtx);
 static void wlan_hdd_restart_init(hdd_context_t *pHddCtx);
 static void wlan_hdd_restart_deinit(hdd_context_t *pHddCtx);
+#ifdef CONFIG_WCNSS_PRONTO_USERMAC
+static VOS_STATUS wlan_hdd_pronto_usermac(hdd_context_t *pHddCtx);
+#endif
 
 #ifdef WLAN_FEATURE_RMC
 static void hdd_tx_fail_ind_callback(v_U8_t *MacAddr, v_U8_t seqNo);
@@ -12081,6 +12084,20 @@ int hdd_wlan_startup(struct device *dev )
    // Get mac addr from platform driver
    ret = wcnss_get_wlan_mac_address((char*)&mac_addr.bytes);
 
+#ifdef CONFIG_WCNSS_PRONTO_USERMAC
+#define MAC_ADDRESS_STR "%02x:%02x:%02x:%02x:%02x:%02x"
+   if (VOS_STATUS_SUCCESS == wlan_hdd_pronto_usermac(pHddCtx))
+   {
+      pr_info("%s: loaded pronto usermac:" MAC_ADDRESS_STR "\n", __func__,
+         pHddCtx->cfg_ini->intfMacAddr[0].bytes[0],
+         pHddCtx->cfg_ini->intfMacAddr[0].bytes[1],
+         pHddCtx->cfg_ini->intfMacAddr[0].bytes[2],
+         pHddCtx->cfg_ini->intfMacAddr[0].bytes[3],
+         pHddCtx->cfg_ini->intfMacAddr[0].bytes[4],
+         pHddCtx->cfg_ini->intfMacAddr[0].bytes[5]);
+   }
+   else
+#endif
    if ((0 == ret) && (!vos_is_macaddr_zero(&mac_addr)))
    {
       /* Store the mac addr for first interface */
@@ -13908,6 +13925,49 @@ static VOS_STATUS wlan_hdd_init_channels(hdd_context_t *pHddCtx)
       return VOS_STATUS_E_FAULT;
    }
 }
+
+#ifdef CONFIG_WCNSS_PRONTO_USERMAC
+extern void* get_wcnss_pronto_usermac(void);
+
+/**---------------------------------------------------------------------------
+ *
+ *   \brief wlan_hdd_pronto_usermac
+ *
+ *   This function is used to set custom (or random) MAC address.
+ *
+ *   This function is called from hdd_wlan_startup
+ *
+ *   \param  - pHddCtx: HDD context
+ *
+ *   \return - VOS_STATUS_SUCCESS: Success
+ *           - VOS_STATUS_E_FAILURE: Failure reading custom address
+
+ * --------------------------------------------------------------------------*/
+static VOS_STATUS wlan_hdd_pronto_usermac(hdd_context_t *pHddCtx)
+{
+   int i;
+   char *macbuf;
+
+   macbuf = (char *)get_wcnss_pronto_usermac();
+
+   if (!(macbuf[0] | macbuf[1] | macbuf[2] | macbuf[3] | macbuf[4] | macbuf[5]))
+      return VOS_STATUS_E_FAILURE;
+
+   for (i = 0; i < VOS_MAX_CONCURRENCY_PERSONA; i++)
+   {
+      pHddCtx->cfg_ini->intfMacAddr[i].bytes[0] = macbuf[0];
+      pHddCtx->cfg_ini->intfMacAddr[i].bytes[1] = macbuf[1];
+      pHddCtx->cfg_ini->intfMacAddr[i].bytes[2] = macbuf[2];
+      pHddCtx->cfg_ini->intfMacAddr[i].bytes[3] = macbuf[3];
+      pHddCtx->cfg_ini->intfMacAddr[i].bytes[4] = macbuf[4];
+
+      // autogen other mac addresses
+      pHddCtx->cfg_ini->intfMacAddr[i].bytes[5] = macbuf[5] + i;
+   }
+
+   return VOS_STATUS_SUCCESS;
+}
+#endif
 
 #ifdef CONFIG_ENABLE_LINUX_REG
 VOS_STATUS wlan_hdd_init_channels_for_cc(hdd_context_t *pHddCtx, driver_load_type init )

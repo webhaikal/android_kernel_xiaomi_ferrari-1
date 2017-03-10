@@ -69,3 +69,4 @@ obj-$(CONFIG_QCOM_LIQUID_DOCK)	+= qcom_liquid_dock.o
 obj-y				+= qcom/
 obj-$(CONFIG_IMMERSION_HAPTIC) += tspdrv/
 obj-$(CONFIG_UID_CPUTIME) 	+= uid_cputime.o
+obj-$(CONFIG_WCNSS_PRONTO_USERMAC) += wcnss_pronto_usermac.o

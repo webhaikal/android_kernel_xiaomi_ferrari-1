@@ -633,6 +633,12 @@ config UID_CPUTIME
 	help
 	  Per UID based cpu time statistics exported to /proc/uid_cputime
 
+config WCNSS_PRONTO_USERMAC
+	tristate "User-defined MAC Address support for Qualcomm WCNSS Pronto"
+	depends on WCNSS_CORE_PRONTO
+	help
+	  Allow users to configure MAC Address for Qualcomm WCNSS Pronto
+
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"
