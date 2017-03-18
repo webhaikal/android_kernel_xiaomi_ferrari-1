@@ -97,13 +97,8 @@
 	};
 
 	i2c_6: i2c@78ba000 { /* BLSP1 QUP6 */
-		nfc-nci@e {
-			status = "disabled";
-		};
-
-		nq@2b {
-			status = "disabled";
-		};
+		/delete-node/ nfc-nci@e;
+		/delete-node/ nq@2b;
 	};
 
 	i2c@78b6000 { /* BLSP1 QUP2 */

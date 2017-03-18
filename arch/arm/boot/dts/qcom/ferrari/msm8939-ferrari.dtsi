@@ -81,6 +81,8 @@
 	usb_otg: usb@78d9000 {
 		qcom,hsusb-otg-phy-init-seq = <0x74 0x80 0x6E 0x81 0x32 0x82 0x13 0x83 0xffffffff>;
 	};
+
+	/delete-node/ mcd;
 };
 
 &tlmm_pinmux {
@@ -113,4 +115,10 @@
 	tpiu_seta_1 {
 		/delete-property/ qcom,pins;
 	};
+
+	/delete-node/ ddic_rst_active;
+	/delete-node/ ddic_rst_suspend;
+
+	/delete-node/ mod_en_active;
+	/delete-node/ mod_en_suspend;
 };
