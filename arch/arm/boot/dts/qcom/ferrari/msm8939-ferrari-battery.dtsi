@@ -55,6 +55,7 @@
 			qcom,otp-rslow-cfg;
 
 			/delete-property/ qcom,charging-disabled;
+			/delete-property/ qcom,recharge-thresh-mv;
 		};
 
 		ncp6335d: ncp6335d-regulator@1c {
