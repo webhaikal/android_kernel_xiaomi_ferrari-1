@@ -20,6 +20,7 @@ menu "Xiaomi board selection"
 		select BACKLIGHT_LCD_SUPPORT
 		select BACKLIGHT_LM3533
 		select CM36686
+		select HAPTIC_ISA1000
 		select IIO
 		select IIO_ST_HUB_DRIVERS
 		select IIO_ST_HUB_RAM_LOADER
