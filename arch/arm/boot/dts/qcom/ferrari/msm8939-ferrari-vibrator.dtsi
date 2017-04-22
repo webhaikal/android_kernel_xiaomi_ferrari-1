@@ -47,10 +47,15 @@
 };
 
 &soc {
-	vibrator-isa1000 {
+	vibrator {
+		status = "ok";
+		compatible = "imagis,isa1000";
+		gpio-isa1000-en = <1023>;
+		gpio-haptic-en = <1022>;
+
 		clock-names = "vibrator_pwm";
 		clocks = <&clock_gcc clk_gcc_gp1_clk>;
-		compatible = "vibrator,isa1000";
+
 		pinctrl-0 = <&vibrator_pwm_default &vibrator_pin_enable>;
 		pinctrl-1 = <&vibrator_pwm_sleep &vibrator_pin_disable>;
 		pinctrl-names = "pwm_default", "pwm_sleep";

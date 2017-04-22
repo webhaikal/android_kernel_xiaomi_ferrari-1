@@ -11,7 +11,7 @@
  */
 
 #include "msm8939-ferrari-mdss.dtsi"
-#include "msm8939-ferrari-tspdrv.dtsi"
+#include "msm8939-ferrari-vibrator.dtsi"
 #include "msm8939-ferrari-battery.dtsi"
 #include "msm8939-ferrari-rtc.dtsi"
 #include "msm8939-ferrari-audio.dtsi"
